@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33209.295
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luminus.Chat", "Luminus.Chat\Luminus.Chat.csproj", "{155F7DBE-222B-42D6-9E47-8925FC8669AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luminus.Server", "Luminus.Server\Luminus.Server.csproj", "{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F76DE663-BA2A-4E88-8CA4-53CFD24CCCF3}
+	EndGlobalSection
+EndGlobal
