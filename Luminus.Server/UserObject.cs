@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Luminus.Server.DAL;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,30 +28,30 @@ namespace Luminus.Server
             Reader = new StreamReader(stream);
             // создаем StreamWriter для отправки данных
             Writer = new StreamWriter(stream);
+            // получение пользователя, который подключился
+            User = JsonConvert.DeserializeObject<User>(Reader.ReadLine());
+            Console.WriteLine($"{User.Name}: Подключён");
         }
-
+        //Чтение сообщений пользователя
         public async Task ProcessAsync()
         {
             try
             {
-                var message = JsonConvert.DeserializeObject<Message>(await Reader.ReadLineAsync());
-                
-                await server.BroadcastMessageAsync(message);
-                Console.WriteLine(message);
                 while (true)
                 {
                     try
                     {
-                        message = JsonConvert.DeserializeObject<Message>(await Reader.ReadLineAsync());
+                        var message = JsonConvert.DeserializeObject<Message>(await Reader.ReadLineAsync());
                         if (message == null) continue;
-                        Console.WriteLine(message.User.Id + $": {message.Text}" );
+                        Console.WriteLine(message.User.Id + $": {message.Text}");
                         await server.BroadcastMessageAsync(message);
+
                     }
-                    catch
+                    catch(Exception)
                     {
-                        Console.WriteLine($"{message.User.Name} покинул чат");
-                        await server.BroadcastMessageAsync(message);
-                        break;
+                        server.RemoveConnection(User.Id);
+                        Close();
+                        continue;
                     }
                 }
             }

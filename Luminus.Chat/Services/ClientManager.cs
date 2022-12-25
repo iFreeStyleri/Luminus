@@ -12,8 +12,10 @@ using System.Windows;
 
 namespace Luminus.Chat.Services
 {
-    public class ClientManager
+    public class ClientManager : IDisposable
     {
+        private TcpClient Client { get; set; }
+        public bool Connected => Client.Connected;
         public List<Message> Messages = new List<Message>();
         public delegate void MessageHandler(Message message);
         public event MessageHandler AddMessage;
@@ -21,49 +23,76 @@ namespace Luminus.Chat.Services
         int port = 8888;
         private StreamReader reader;
         private StreamWriter writer;
-        public ClientManager()
+        public ClientManager(User user)
         {
-            Connect();
+            Connect(user);
         }
 
-        private void Connect()
+        public async void Connect(User user)
         {
-            using var client = new TcpClient(host, port);
+            Client = new TcpClient();
             try
             {
-                client.Connect(host, port);
-                reader = new StreamReader(client.GetStream());
-                writer = new StreamWriter(client.GetStream());
-                if (writer is null || reader is null) return;
-                Task.Run(() => ReceiveMessageAsync(reader));
+                await Client.ConnectAsync(host, port);
+                if (Client.Connected)
+                {
+                    reader = new StreamReader(Client.GetStream());
+                    writer = new StreamWriter(Client.GetStream());
+                    await writer.WriteLineAsync(JsonConvert.SerializeObject(user));
+                    await writer.FlushAsync();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
+        public async void OpenChat()
+        {
+            await Task.Run(ReceiveMessageAsync);
+        }
         public async Task SendMessageAsync(Message message)
         {
-            await writer.WriteLineAsync(JsonConvert.SerializeObject(message));
-            await writer.FlushAsync();
+            if (Connected)
+            {
+                await writer.WriteLineAsync(JsonConvert.SerializeObject(message));
+                await writer.FlushAsync();
+            }
         }
 
-        async Task ReceiveMessageAsync(StreamReader reader)
+        public async void ReceiveMessageAsync()
         {
             while (true)
             {
                 try
                 {
-                    var message = JsonConvert.DeserializeObject<Message>(await reader.ReadLineAsync());
-                    if (message == null) continue;
-                    Messages.Add(message);
-                    AddMessage.Invoke(message);
+                    if (Connected)
+                    {
+                        var message = JsonConvert.DeserializeObject<Message>(await reader.ReadLineAsync());
+                        if (message == null) continue;
+                        Messages.Add(message);
+                        App.Current.Dispatcher.Invoke(() => AddMessage.Invoke(message));
+                    }
                 }
                 catch
                 {
-                    break;
+                    continue;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Client.Close();
+            Client.Dispose();
+        }
+
+        public void Close()
+        {
+            Client.Close();
+            writer?.Dispose();
+            reader?.Dispose();
         }
     }
 }

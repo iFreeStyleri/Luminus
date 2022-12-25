@@ -1,4 +1,4 @@
 ﻿using Luminus.Server;
 
-var server = new ServerManager();
+await using var server = new ServerManager();
 await server.ListenAsync();

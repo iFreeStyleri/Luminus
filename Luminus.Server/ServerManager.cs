@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Luminus.Server
 {
-    public class ServerManager
+    public class ServerManager : IAsyncDisposable
     {
-        TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"),8888);
+        TcpListener listener = new TcpListener(IPAddress.Any,8888);
         private List<UserObject> activeUsers = new List<UserObject>();
         public void RemoveConnection(int id)
         {
@@ -31,7 +31,7 @@ namespace Luminus.Server
                     TcpClient tcpClient = await listener.AcceptTcpClientAsync();
                     UserObject userObject = new UserObject(tcpClient, this);
                     activeUsers.Add(userObject);
-                    Task.Run(userObject.ProcessAsync);
+                    _ = Task.Run(userObject.ProcessAsync);
                 }
             }
             catch (Exception ex)
@@ -62,6 +62,12 @@ namespace Luminus.Server
                 client.Close(); 
             }
             listener.Stop();
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            Disconnect();
+            return ValueTask.CompletedTask;
         }
     }
 }

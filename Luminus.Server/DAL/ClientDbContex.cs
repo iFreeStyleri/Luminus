@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Luminus.Server
+namespace Luminus.Server.DAL
 {
     public class ClientDbContext : DbContext
     {
@@ -20,7 +20,14 @@ namespace Luminus.Server
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("ConnectionString");
+            optionsBuilder.UseSqlServer("Data Source = USER-PC\\SQLEXPRESS; Initial Catalog = Luminus; Integrated Security = True; TrustServerCertificate=True;");
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>().Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+            modelBuilder.Entity<Message>().Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+            modelBuilder.Entity<User>().HasMany(f => f.Messages).WithOne(f => f.User);
         }
     }
 }
