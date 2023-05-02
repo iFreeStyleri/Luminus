@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:Luminus.Chat"
         mc:Ignorable="d"
         Title="RegWindow" Height="276" Width="224" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}">
-    <Border Background="White" CornerRadius="8">
+    <Border Background="White">
         <Grid>
-            <Border MouseDown="Border_MouseDown" Background="#FF00BCE0" VerticalAlignment="Top" CornerRadius="8,8,0,0">
+            <Border MouseDown="Border_MouseDown" Background="#FF00BCE0" VerticalAlignment="Top">
                 <Grid>
                     <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,0,0" Text="Регистрация" FontSize="16" Foreground="White"/>
                     <Button Name="Close" Content="X" Style="{DynamicResource MainStyleButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Height="25" Click="Close_Click"/>

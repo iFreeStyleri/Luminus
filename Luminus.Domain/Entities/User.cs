@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Luminus.Chat.Models
+namespace Luminus.Domain.Entities
 {
     public class User
     {
@@ -15,5 +15,6 @@ namespace Luminus.Chat.Models
         public string Name { get; set; }
         public string Password { get; set; }
         public List<Message> Messages { get; set; }
+
     }
 }

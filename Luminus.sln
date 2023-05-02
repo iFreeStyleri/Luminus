@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luminus.Chat", "Luminus.Chat\Luminus.Chat.csproj", "{155F7DBE-222B-42D6-9E47-8925FC8669AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luminus.Chat", "Luminus.Chat\Luminus.Chat.csproj", "{155F7DBE-222B-42D6-9E47-8925FC8669AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FB1D2602-A46D-4E84-8AE3-860E9BDA43F9} = {FB1D2602-A46D-4E84-8AE3-860E9BDA43F9}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luminus.Server", "Luminus.Server\Luminus.Server.csproj", "{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luminus.API", "Luminus.API\Luminus.API.csproj", "{333F5C6C-8F54-4DA7-8808-CEF11DAFCA12}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luminus.Domain", "Luminus.Domain\Luminus.Domain.csproj", "{FB1D2602-A46D-4E84-8AE3-860E9BDA43F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +22,14 @@ Global
 		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{155F7DBE-222B-42D6-9E47-8925FC8669AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5F04D0C-DA8D-4A8F-9AD7-D5A3642BE484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{333F5C6C-8F54-4DA7-8808-CEF11DAFCA12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333F5C6C-8F54-4DA7-8808-CEF11DAFCA12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{333F5C6C-8F54-4DA7-8808-CEF11DAFCA12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{333F5C6C-8F54-4DA7-8808-CEF11DAFCA12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB1D2602-A46D-4E84-8AE3-860E9BDA43F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB1D2602-A46D-4E84-8AE3-860E9BDA43F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB1D2602-A46D-4E84-8AE3-860E9BDA43F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB1D2602-A46D-4E84-8AE3-860E9BDA43F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

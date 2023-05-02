@@ -1,6 +1,4 @@
-﻿using Luminus.Chat.Models;
-using Luminus.Chat.DAL;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +12,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Luminus.Chat.Services;
+using Luminus.Domain.Entities;
 
 namespace Luminus.Chat
 {
     public partial class AuthWindow : Window
     {
-        public User User { get; set; }
+        private ClientWebManager manager => App.ClientManager;
         public AuthWindow()
         {
             InitializeComponent();
@@ -29,20 +29,16 @@ namespace Luminus.Chat
         {
             var btn = (Button)sender;
             btn.IsEnabled = false;
-            if (!string.IsNullOrEmpty(userText.Text) && !string.IsNullOrEmpty(userText.Text))
+            var user = new User { Name = userText.Text, Password = passText.Text };
+            if(await manager.Authorize(user))
             {
-                using(var db = new ClientDbContext())
-                {
-                    var result = await db.Users.FirstOrDefaultAsync(f => f.Name == userText.Text && f.Password == passText.Text);
-                    if (result == null)
-                    {
-                        MessageBox.Show("Такого пользователя не существует");
-                        btn.IsEnabled = true;
-                        return;
-                    }
-                    new MainWindow(result).Show();
-                    Close();
-                }
+                await manager.Connect();
+                new MainWindow(user).Show();
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Такого пользователя не существует!");
             }
             btn.IsEnabled = true;
         }
@@ -51,11 +47,7 @@ namespace Luminus.Chat
         {
             var window = new RegWindow();
             window.Owner = this;
-            if(window.ShowDialog() == true)
-            {
-                new MainWindow(User).Show();
-                Close();
-            }
+            window.Show();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

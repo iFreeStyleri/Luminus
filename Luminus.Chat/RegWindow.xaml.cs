@@ -1,6 +1,4 @@
-﻿using Luminus.Chat.Models;
-using Luminus.Chat.DAL;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Luminus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Luminus.Chat
@@ -33,16 +32,16 @@ namespace Luminus.Chat
             btn.IsEnabled = false;
             if (!string.IsNullOrEmpty(userText.Text) && !string.IsNullOrEmpty(passText.Text))
             {
-                using (var db = new ClientDbContext())
+                var user = new User { Name = userText.Text, Password = passText.Text };
+                if (await App.ClientManager.Register(user))
                 {
-                    var user = new User { Name = userText.Text, Password = passText.Text };
-                    db.Users.Add(user);
-                    await db.SaveChangesAsync();
-                    var result = await db.Users.FirstOrDefaultAsync(f => f.Name == user.Name && f.Password == user.Password);
-                    ((AuthWindow)Owner).User = result;
-                    DialogResult = true;
+                    await App.ClientManager.Connect();
+                    new MainWindow(user).Show();
                     Close();
+                    Owner.Close();
                 }
+                else
+                    MessageBox.Show("Аккаунт существует!");
             }
             btn.IsEnabled = true;
 
@@ -50,7 +49,6 @@ namespace Luminus.Chat
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             Close();
         }
 

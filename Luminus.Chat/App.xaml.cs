@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Luminus.Chat.Services;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,11 @@ namespace Luminus.Chat
     /// </summary>
     public partial class App : Application
     {
+        private static ClientWebManager _clientManager;
+        public static ClientWebManager ClientManager => _clientManager;
+        public App()
+        {
+            _clientManager = new ClientWebManager();
+        }
     }
 }

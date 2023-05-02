@@ -8,23 +8,23 @@
         Title="Login" Height="332" Width="290" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}">
     <Border CornerRadius="8" Background="White">
         <Grid>
-            <Border MouseDown="Border_MouseDown" VerticalAlignment="Top" CornerRadius="8,8,0,0" Background="#FF00BCE0">
+            <Border MouseDown="Border_MouseDown" VerticalAlignment="Top" Background="#FF00BCE0">
                 <Grid>
                     <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" Text="Вход" Foreground="White" FontSize="16" Margin="10,2,0,0"/>
                     <Button Name="Close" Click="Close_Click" Style="{DynamicResource MainStyleButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Height="25" Content="X"/>
                 </Grid>
             </Border>
-            <Ellipse Width="75" Height="75" Margin="0,0,0,180">
+            <Ellipse Width="100" Height="120" Margin="0,0,0,120">
                 <Ellipse.Fill>
-                    <ImageBrush RenderOptions.BitmapScalingMode="HighQuality" ImageSource="Assets/logo.png"/>
+                    <ImageBrush RenderOptions.BitmapScalingMode="HighQuality" ImageSource="Assets/logo.jpg"/>
                 </Ellipse.Fill>
             </Ellipse>
-            <TextBlock Text="Username:" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,0,0,65"/>
-            <TextBox Style="{DynamicResource MainTextBoxStyle}" x:Name="userText" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,0,0,25" Height="20"/>
-            <TextBlock Text="Password:" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,25,0,0"/>
-            <TextBox Style="{DynamicResource MainTextBoxStyle}" x:Name="passText" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,70,0,0" Height="20"/>
-            <Button Style="{DynamicResource MainStyleButton}" Name="Login" Click="Login_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Height="25" Margin="0,130,0,0" Content="Войти"/>
-            <Button Style="{DynamicResource MainStyleButton}" Name="Register" Click="Register_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Width="140" Height="25" Margin="0,200,0,0" Content="Зарегистрироваться"/>
+            <TextBlock Text="Username:" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,0,0,15"/>
+            <TextBox Style="{DynamicResource MainTextBoxStyle}" x:Name="userText" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,20,0,0" Height="20"/>
+            <TextBlock Text="Password:" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,60,0,0"/>
+            <TextBox Style="{DynamicResource MainTextBoxStyle}" x:Name="passText" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Margin="0,100,0,0" Height="20"/>
+            <Button Style="{DynamicResource MainStyleButton}" Name="Login" Click="Login_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Height="25" Margin="0,160,0,0" Content="Войти"/>
+            <Button Style="{DynamicResource MainStyleButton}" Name="Register" Click="Register_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Width="140" Height="25" Margin="0,225,0,0" Content="Зарегистрироваться"/>
         </Grid>
     </Border>
 </Window>

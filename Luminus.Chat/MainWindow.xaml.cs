@@ -1,12 +1,14 @@
-﻿using Luminus.Chat.DAL;
-using Luminus.Chat.Models;
+﻿using Luminus.Chat.Models;
 using Luminus.Chat.Services;
+using Luminus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,35 +28,39 @@ namespace Luminus.Chat
     public partial class MainWindow : Window
     {
         private User User { get; set; }
-        private readonly ClientManager manager;
+        private ClientWebManager manager => App.ClientManager;
 
         public MainWindow(User user)
         {
             User = user;
             InitializeComponent();
-            manager = new ClientManager(user);
-            manager.AddMessage += Manager_AddMessage;
-            manager.OpenChat();
-            CheckPerTimeConnect();
+            manager.OnMessage += Manager_AddMessage;
+            
+            _ = manager.EchoMessage();
+            selectedUser.Text = User.Name;
+            _ = CheckConnection();
         }
+        private async Task CheckConnection()
+        {
+            await Task.Run(() =>
+            {
+                App.Current.Dispatcher.Invoke(async () =>
+                {
+                    while (true)
+                    {
+                        if (manager.Connected)
+                            statusText.Foreground = Brushes.Green;
+                        else
+                            statusText.Foreground = Brushes.Red;
+                        await Task.Delay(100);
+                    }
+                });
 
+            });
+        }
         private void Manager_AddMessage(Message message)
         {
-            list.Items.Add(message);
-        }
-
-        private void CheckConnect(bool connect)
-        {
-            if (connect)
-            {
-                onlineState.Text = "Online";
-                onlineState.Foreground = Brushes.Green;
-            }
-            else
-            {
-                onlineState.Text = "Offline";
-                onlineState.Foreground = Brushes.Red;
-            }
+            list.Items.Add(new MessageModel(message, User));
         }
 
         private async void Send_Click(object sender, RoutedEventArgs e)
@@ -64,25 +70,19 @@ namespace Luminus.Chat
             {
                 try
                 {
-                    var message = new Message { User = User, Text = text };
-                    await manager.SendMessageAsync(message);
-                    CheckConnect(manager.Connected);
-                    list.Items.Add(message);
-                    richBox.Document.Blocks.Clear();
+                    var message = new Message { User = User, Text = text, Created = DateTime.Now };
+                    if (manager.Connected)
+                    {
+                        await manager.SendMessage(message);
+                        list.Items.Add(new MessageModel(message, User));
+                        richBox.Document.Blocks.Clear();
+                    }
                 }
                 catch
                 {
                     MessageBox.Show("Проблемы с сервером");
-                    CheckConnect(false);
                 }
             }
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            manager.Close();
-            manager.Connect(User);
-            manager.OpenChat();
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -99,20 +99,56 @@ namespace Luminus.Chat
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            manager.Close();
-            Application.Current.Shutdown();
+            manager.Disconnect();
+            var auth = new AuthWindow();
+            auth.Show();
+            Close();
+        }
+        private void Minimal_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
         }
 
-        private void CheckPerTimeConnect()
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Task.Run(async () =>
+            var message = await manager.GetMessages();
+            message.ForEach(f => list.Items.Add(new MessageModel(f, User)));
+        }
+
+        private async void addFileBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new OpenFileDialog();
+            fileDialog.Multiselect = false;
+            if(fileDialog.ShowDialog() == true)
             {
-                while (true)
+                var text = new TextRange(richBox.Document.ContentStart, richBox.Document.ContentEnd).Text;
+                await manager.SendFile(fileDialog.OpenFile(), fileDialog.SafeFileName);
+                var message = new Message
                 {
-                    await App.Current.Dispatcher.InvokeAsync(() => CheckConnect(manager.Connected));
-                    await Task.Delay(200);
-                }
-            });
+                    User = manager.User,
+                    Created = DateTime.Now,
+                    File = new List<MessageFile>
+                    {
+                        new MessageFile
+                        {
+                            FileName = fileDialog.SafeFileName
+                        }
+                    },
+                    Text = text
+                };
+                await manager.SendMessage(message);
+                list.Items.Add(new MessageModel(message, manager.User));
+            }
+        }
+
+        private async void getFile_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            var fileName = (string)button.Content;
+            var stream = await manager.GetFile(fileName);
+            var savePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
+            using var fileStream = new FileStream(savePath + $@"\{fileName}", FileMode.OpenOrCreate);
+            await stream.CopyToAsync(fileStream);
         }
     }
 }

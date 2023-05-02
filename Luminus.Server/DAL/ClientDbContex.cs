@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace Luminus.Server.DAL
 {
     public class ClientDbContext : DbContext
     {
+        private const string ConnectionString = "Filename=client.db";
         public DbSet<User> Users => Set<User>();
         public DbSet<Message> Messages => Set<Message>();
         public ClientDbContext()
@@ -20,14 +21,8 @@ namespace Luminus.Server.DAL
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Data Source = USER-PC\\SQLEXPRESS; Initial Catalog = Luminus; Integrated Security = True; TrustServerCertificate=True;");
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<User>().Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
-            modelBuilder.Entity<Message>().Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
-            modelBuilder.Entity<User>().HasMany(f => f.Messages).WithOne(f => f.User);
+            //Использовать строку подключения для Sqlite
+            optionsBuilder.UseSqlite(ConnectionString);
         }
     }
 }

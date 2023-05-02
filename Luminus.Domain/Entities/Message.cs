@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Luminus.Chat.Models
+namespace Luminus.Domain.Entities
 {
     public class Message
     {
@@ -14,5 +9,7 @@ namespace Luminus.Chat.Models
         public int Id { get; set; }
         public User User { get; set; }
         public string Text { get; set; }
+        public DateTime Created { get; set; }
+        public List<MessageFile> File { get; set; }
     }
 }
