@@ -24,7 +24,7 @@ namespace Luminus.API.Models
 
         public async Task<bool> Connect(User user)
         {
-            var result = await _clientContext.Users.AsNoTracking().FirstOrDefaultAsync(f => f.Name == user.Password);
+            var result = await _clientContext.Users.AsNoTracking().FirstOrDefaultAsync(f => f.Name == user.Name && f.Password == user.Password);
             if (result == null)
             {
                 Dispose();
