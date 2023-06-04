@@ -43,10 +43,17 @@ namespace Luminus.Chat.Services
 
         public async void Disconnect()
         {
-            var request = new Request { Data = JObject.Parse(JsonConvert.SerializeObject(User)), Type = RequestType.Disconnect };
-            await _webSocket.SendAsync(new ArraySegment<byte>(Serialize(request)), WebSocketMessageType.Text, true, CancellationToken.None);
-            await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "500", CancellationToken.None);
-            User = null;
+            try
+            {
+                var request = new Request { Data = JObject.Parse(JsonConvert.SerializeObject(User)), Type = RequestType.Disconnect };
+                await _webSocket.SendAsync(new ArraySegment<byte>(Serialize(request)), WebSocketMessageType.Text, true, CancellationToken.None);
+                await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "500", CancellationToken.None);
+                User = null;
+            }
+            catch
+            {
+
+            }
         }
 
         public async Task<bool> Authorize(User user)

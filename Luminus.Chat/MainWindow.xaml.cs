@@ -1,25 +1,16 @@
 ﻿using Luminus.Chat.Models;
 using Luminus.Chat.Services;
 using Luminus.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 namespace Luminus.Chat
 {
     /// <summary>
@@ -144,11 +135,14 @@ namespace Luminus.Chat
         private async void getFile_Click(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
-            var fileName = (string)button.Content;
-            var stream = await manager.GetFile(fileName);
-            var savePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
-            using var fileStream = new FileStream(savePath + $@"\{fileName}", FileMode.OpenOrCreate);
-            await stream.CopyToAsync(fileStream);
+            var openDialog = new SaveFileDialog();
+            openDialog.FileName = (string)button.Content;
+            if (openDialog.ShowDialog() == true)
+            {
+                var stream = await manager.GetFile((string)button.Content);
+                using var fileStream = new FileStream(openDialog.FileName, FileMode.CreateNew);
+                await stream.CopyToAsync(fileStream);
+            }
         }
 
         private void Users_Click(object sender, RoutedEventArgs e)
