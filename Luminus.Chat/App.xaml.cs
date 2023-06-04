@@ -20,5 +20,11 @@ namespace Luminus.Chat
         {
             _clientManager = new ClientWebManager();
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            _clientManager.Disconnect();
+        }
     }
 }

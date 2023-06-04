@@ -1,9 +1,11 @@
-﻿using Luminus.Domain;
+﻿using Luminus.Chat.Models;
+using Luminus.Domain;
 using Luminus.Domain.Entities;
 using Luminus.Domain.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,9 +41,11 @@ namespace Luminus.Chat.Services
         }
 
 
-        public void Disconnect()
+        public async void Disconnect()
         {
-            _webSocket.Abort();
+            var request = new Request { Data = JObject.Parse(JsonConvert.SerializeObject(User)), Type = RequestType.Disconnect };
+            await _webSocket.SendAsync(new ArraySegment<byte>(Serialize(request)), WebSocketMessageType.Text, true, CancellationToken.None);
+            await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "500", CancellationToken.None);
             User = null;
         }
 
@@ -151,6 +155,12 @@ namespace Luminus.Chat.Services
         {
             var obj = JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(data,0, count));
             return obj;
+        }
+
+        public async Task<IEnumerable<UserInfoModel>> GetActiveUsers()
+        {
+            using var httpClient = new HttpClient();
+            return await httpClient.GetFromJsonAsync<List<UserInfoModel>>("http://localhost:5272/api/account/get-active-users");
         }
     }
 }

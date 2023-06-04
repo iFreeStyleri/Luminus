@@ -15,9 +15,10 @@ builder.Services.AddControllers().AddNewtonsoftJson(opt =>
 builder.Services
     .AddDbContext<ClientDbContext>(opt => opt.UseSqlite(ClientDbContext.ConnectionString));
 builder.Services.AddTransient<ClientService>();
-
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
-
+app.UseSwaggerUI();
+app.UseSwagger();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

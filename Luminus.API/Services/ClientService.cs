@@ -45,28 +45,40 @@ namespace Luminus.API.Services
                         switch (request.Type)
                         {
                             case RequestType.Connect:
-                                var user = request.Data.ToObject<User>();
-                                if (user != null && !UserIsConnect(user))
                                 {
-                                    var model = new ClientModel(_context, webSocket, this);
-                                    if (!await model.Connect(user))
-                                        return;
-                                    Clients.Add(model);
+                                    var user = request.Data.ToObject<User>();
+                                    if (user != null && !UserIsConnect(user))
+                                    {
+                                        var model = new ClientModel(_context, webSocket, this);
+                                        if (!await model.Connect(user))
+                                            return;
+                                        Clients.Add(model);
+                                    }
                                 }
                                 break;
                             case RequestType.SendMessage:
-                                var message = request.Data.ToObject<Message>();
-                                if (message != null && message.User.Name != null && UserIsConnect(message.User))
                                 {
-                                    await BroadcastMessage(message);
+                                    var message = request.Data.ToObject<Message>();
+                                    if (message != null && message.User.Name != null && UserIsConnect(message.User))
+                                    {
+                                        await BroadcastMessage(message);
+                                    }
+                                    else { return; }
+                                    break;
                                 }
-                                else { return; }
+                            case RequestType.Disconnect:
+                                {
+                                    var user = request.Data.ToObject<User>();
+                                    var client = _clients.SingleOrDefault(s => s.User.Id == user.Id);
+                                    Disconnect(client);
+                                }
                                 break;
                         }
                     }
                 }
             }
         }
+
         public async Task BroadcastMessage(Message message)
         {
             foreach(var client in Clients)
@@ -91,9 +103,15 @@ namespace Luminus.API.Services
             return JsonConvert.DeserializeObject<Request>(message);
         }
 
-        public void Disconnect(ClientModel client)
+        public void Disconnect(ClientModel? client)
         {
+            if (client == null) return;
             Clients.Remove(client);
+        }
+
+        public bool CheckActiveUser(int id)
+        {
+            return _clients.SingleOrDefault(user => user.User.Id == id) != null;
         }
     }
 }

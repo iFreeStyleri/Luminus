@@ -44,5 +44,9 @@ namespace Luminus.API.Models
             _webSocket.Dispose();
             _clientService.Disconnect(this);
         }
+
+        public async Task SendActive(UserInfo userInfo)
+        {
+        }
     }
 }

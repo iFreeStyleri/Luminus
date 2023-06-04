@@ -1,4 +1,6 @@
 ﻿using Luminus.API.DAL;
+using Luminus.API.Services;
+using Luminus.Domain;
 using Luminus.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +12,12 @@ namespace Luminus.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ClientDbContext _context;
+        private readonly ClientService _clientService;
 
-        public AccountController(ClientDbContext context)
+        public AccountController(ClientDbContext context, ClientService clientService)
         {
             _context = context;
+            _clientService = clientService;
         }
 
         [HttpPost("auth")]
@@ -41,6 +45,18 @@ namespace Luminus.API.Controllers
                 return Ok(result);
             }
             return BadRequest();
+        }
+
+        [HttpGet("get-active-users")]
+        public async Task<IActionResult> GetActiveUsers()
+        {
+            var result = await _context.Users.Select(s => new UserInfo
+            {
+                Name = s.Name,
+                Id = s.Id
+            }).ToListAsync();
+            if (result == null) return BadRequest();
+            return Ok(result);
         }
     }
 }

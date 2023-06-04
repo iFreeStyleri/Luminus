@@ -150,5 +150,11 @@ namespace Luminus.Chat
             using var fileStream = new FileStream(savePath + $@"\{fileName}", FileMode.OpenOrCreate);
             await stream.CopyToAsync(fileStream);
         }
+
+        private void Users_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new UsersWindow(manager);
+            window.Show();
+        }
     }
 }

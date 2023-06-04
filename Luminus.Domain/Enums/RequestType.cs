@@ -9,6 +9,7 @@ namespace Luminus.Domain.Enums
     public enum RequestType
     {
         Connect,
-        SendMessage
+        SendMessage,
+        Disconnect
     }
 }
